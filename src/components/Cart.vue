@@ -48,7 +48,7 @@
     </table>
     <div class="placeholder" v-else>购物车里还没有东西哦！快去添加吧~~</div>
     <div class="banner-pay">
-      <span class="btn-pay" @click="payAll">结&nbsp;&nbsp;算</span>
+      <span>￥&nbsp;{{ totalPrice }}</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="btn-pay" @click="payAll">结&nbsp;&nbsp;算</span>
     </div>
   </div>
 </template>
@@ -75,6 +75,12 @@
         }
         this.checkedArray = this.cart.map(() => false)
       })
+    },
+    computed: {
+      totalPrice () {
+        let balance = this.cart.filter((item, index) => this.checkedArray[index])
+        return balance.reduce((sum, item) => sum + item.price * item.quantity, 0)
+      }
     },
     methods: {
       setStore () {
@@ -183,10 +189,11 @@
     border-top: 1px solid #ebeef5;
     padding: 15px 5px;
     overflow: hidden;
+    text-align: right;
+    color: #777;
   }
   .btn-pay {
     display: inline-block;
-    float: right;
     width: 120px;
     cursor: pointer;
     line-height: 36px;
