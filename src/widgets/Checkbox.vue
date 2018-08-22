@@ -17,6 +17,7 @@
     methods: {
       toggleChecked () {
         this.$emit('input', !this.value)
+        this.$emit('change')
       }
     }
   }

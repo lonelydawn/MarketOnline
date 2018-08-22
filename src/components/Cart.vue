@@ -11,7 +11,7 @@
       <thead>
       <tr>
         <th class="col01">
-          <Checkbox class="checkbox" v-model="isAllChecked"></Checkbox>&nbsp;&nbsp;
+          <Checkbox class="checkbox" v-model="isAllChecked" @change="allCheckChanged"></Checkbox>&nbsp;&nbsp;
           商品
         </th>
         <th class="col02">单价</th>
@@ -25,7 +25,7 @@
         v-for="(item, index) in cart"
         :key="index">
         <td class="col01 one-line" :title="item.text">
-          <Checkbox class="checkbox" v-model="checkedArray[index]"></Checkbox>&nbsp;&nbsp;
+          <Checkbox class="checkbox" v-model="checkedArray[index]" @change="checkChanged"></Checkbox>&nbsp;&nbsp;
           <img class="thumbnail-goods" :src="item.cover">&nbsp;
           {{ item.text }}
         </td>
@@ -82,8 +82,14 @@
           cart: this.cart,
           order: this.order
         }
-        console.log(gsStore)
         window.localStorage.setItem('gsStore', JSON.stringify(gsStore))
+      },
+      checkChanged () {
+        this.checkedArray.every(item => item) && (this.isAllChecked = true)
+        this.checkedArray.some(item => !item) && (this.isAllChecked = false)
+      },
+      allCheckChanged () {
+        this.checkedArray.fill(this.isAllChecked)
       },
       toggleQuantity () {
         this.setStore()
@@ -109,11 +115,6 @@
         this.cart = inCart
         this.checkedArray = this.cart.map(() => false)
         this.setStore()
-      }
-    },
-    watch: {
-      isAllChecked (value) {
-        this.checkedArray.fill(value)
       }
     }
   }
