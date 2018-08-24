@@ -11,7 +11,7 @@
       <thead>
       <tr>
         <th class="col01">
-          <Checkbox class="checkbox" v-model="isAllChecked" @change="allCheckChanged"></Checkbox>&nbsp;&nbsp;
+          <Checkbox class="checkbox" v-model="isAllChecked" @change="onAllCheckChanged"></Checkbox>&nbsp;&nbsp;
           商品
         </th>
         <th class="col02">单价</th>
@@ -25,7 +25,7 @@
         v-for="(item, index) in cart"
         :key="index">
         <td class="col01 one-line" :title="item.text">
-          <Checkbox class="checkbox" v-model="checkedArray[index]" @change="checkChanged"></Checkbox>&nbsp;&nbsp;
+          <Checkbox class="checkbox" v-model="checkedArray[index]" @change="onCheckChanged"></Checkbox>&nbsp;&nbsp;
           <img class="thumbnail-goods" :src="item.cover">&nbsp;
           {{ item.text }}
         </td>
@@ -48,7 +48,7 @@
     </table>
     <div class="placeholder" v-else>购物车里还没有东西哦！快去添加吧~~</div>
     <div class="banner-pay">
-      <span>￥&nbsp;{{ totalPrice }}</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="btn-pay" @click="payAll">结&nbsp;&nbsp;算</span>
+      <span>￥&nbsp;{{ getTotalPrice() }}</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="btn-pay" @click="payAll">结&nbsp;&nbsp;算</span>
     </div>
   </div>
 </template>
@@ -68,21 +68,19 @@
     },
     mounted () {
       this.$nextTick(function () {
-        let gsStore = window.localStorage.getItem('gsStore')
-        if (gsStore) {
-          this.cart = JSON.parse(gsStore).cart || []
-          this.order = JSON.parse(gsStore).order || []
-        }
-        this.checkedArray = this.cart.map(() => false)
+        this.getStore()
+        this.setCheckedArray()
       })
     },
-    computed: {
-      totalPrice () {
-        let balance = this.cart.filter((item, index) => this.checkedArray[index])
-        return balance.reduce((sum, item) => sum + item.price * item.quantity, 0)
-      }
-    },
     methods: {
+      getStore () {
+        let gsStore = window.localStorage.getItem('gsStore')
+        if (gsStore) {
+          gsStore = JSON.parse(gsStore)
+          this.cart = gsStore.cart || []
+          this.order = gsStore.order || []
+        }
+      },
       setStore () {
         let gsStore = {
           cart: this.cart,
@@ -90,11 +88,18 @@
         }
         window.localStorage.setItem('gsStore', JSON.stringify(gsStore))
       },
-      checkChanged () {
+      setCheckedArray () {
+        this.checkedArray = this.cart.map(() => false)
+      },
+      getTotalPrice () {
+        let balance = this.cart.filter((item, index) => this.checkedArray[index])
+        return balance.reduce((sum, item) => sum + item.price * item.quantity, 0)
+      },
+      onCheckChanged () {
         this.checkedArray.every(item => item) && (this.isAllChecked = true)
         this.checkedArray.some(item => !item) && (this.isAllChecked = false)
       },
-      allCheckChanged () {
+      onAllCheckChanged () {
         this.checkedArray.fill(this.isAllChecked)
       },
       toggleQuantity () {
@@ -119,7 +124,7 @@
             : inCart.push(this.cart[index])
         })
         this.cart = inCart
-        this.checkedArray = this.cart.map(() => false)
+        this.setCheckedArray()
         this.setStore()
       }
     }

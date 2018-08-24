@@ -78,12 +78,15 @@
       return {
         actorIndex: 0,
         quantity: 1,
-        isCart: false,
-        isOrder: false
+        isCart: false, // 生成动态类名
+        isOrder: false, // 生成动态类名
+        cart: [],
+        order: []
       }
     },
     mounted () {
       this.$nextTick(function () {
+        this.getStore()
         // 监听器作用：当分身动画结束后，去除动画类名
         this.$refs.animPart.addEventListener('animationend', () => {
           this.isCart = false
@@ -101,17 +104,32 @@
       actorC () {
         return this.item.images[this.actorIndex]
       },
-      gsStore () {
-        // 如果localStorage不存在gsStore，则声明gsStore对象
-        let gsStore = JSON.parse(window.localStorage.getItem('gsStore') || '{}')
-        // 如果gsStore不存在cart列表，则设置cart
-        !gsStore.cart && (gsStore.cart = [])
-        // 如果gsStore不存在order列表，则设置order
-        !gsStore.order && (gsStore.order = [])
-        return gsStore
+      result () {
+        return {
+          cover: this.item.cover,
+          text: this.item.text,
+          type: this.item.type,
+          price: this.item.onlinePrice,
+          quantity: this.quantity
+        }
       }
     },
     methods: {
+      getStore () {
+        let gsStore = window.localStorage.getItem('gsStore')
+        if (gsStore) {
+          gsStore = JSON.parse(gsStore)
+          this.cart = gsStore.cart || []
+          this.order = gsStore.order || []
+        }
+      },
+      setStore () {
+        let gsStore = {
+          cart: this.cart,
+          order: this.order
+        }
+        window.localStorage.setItem('gsStore', JSON.stringify(gsStore))
+      },
       toggleActor (index) {
         this.actorIndex = index
       },
@@ -120,24 +138,15 @@
           this.quantity = 1
         }
       },
-      setStore (mode) {
-        let gsStore = this.gsStore
-        gsStore[mode].push({
-          cover: this.item.cover,
-          text: this.item.text,
-          type: this.item.type,
-          price: this.item.onlinePrice,
-          quantity: this.quantity
-        })
-        window.localStorage.setItem('gsStore', JSON.stringify(gsStore))
-      },
       addInCart () {
         this.isCart = true
-        this.setStore('cart')
+        this.cart.push(this.result)
+        this.setStore()
       },
       addInOrder () {
         this.isOrder = true
-        this.setStore('order')
+        this.order.push(this.result)
+        this.setStore()
       }
     }
   }

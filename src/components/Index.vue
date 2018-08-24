@@ -46,14 +46,7 @@
     components: { Swiper },
     data () {
       return {
-        index: 0,
-        slidesColor: ['#e8e8e8', '#17b14f', '#e8e8e8', '#96520c'],
-        slidesImage: [
-          './static/images/slide01.png',
-          './static/images/slide02.png',
-          './static/images/slide03.png',
-          './static/images/slide04.png'
-        ]
+        index: 0
       }
     },
     computed: {
@@ -62,6 +55,12 @@
       },
       goods () {
         return config.goods
+      },
+      slidesColor () {
+        return config.goods.map(item => item.color)
+      },
+      slidesImage () {
+        return config.goods.map(item => item.poster)
       }
     },
     methods: {

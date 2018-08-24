@@ -49,14 +49,18 @@
     },
     mounted () {
       this.$nextTick(function () {
-        let gsStore = window.localStorage.getItem('gsStore')
-        if (gsStore) {
-          this.order = JSON.parse(gsStore).order || []
-          this.cart = JSON.parse(gsStore).cart || []
-        }
+        this.getStore()
       })
     },
     methods: {
+      getStore () {
+        let gsStore = window.localStorage.getItem('gsStore')
+        if (gsStore) {
+          gsStore = JSON.parse(gsStore)
+          this.cart = gsStore.cart || []
+          this.order = gsStore.order || []
+        }
+      },
       setStore () {
         let gsStore = {
           cart: this.cart,

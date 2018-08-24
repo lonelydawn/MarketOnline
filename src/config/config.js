@@ -70,6 +70,8 @@ export default {
       price: '536.00',
       onlinePrice: '208.00',
       cover: './static/images/nuotai01.jpg',
+      poster: './static/images/slide01.png',
+      color: '#e8e8e8',
       images: [
         './static/images/nuotai01.jpg',
         './static/images/nuotai02.jpg',
@@ -93,6 +95,8 @@ export default {
       price: '48.90',
       onlinePrice: '43.90',
       cover: './static/images/qixi01.jpg',
+      poster: './static/images/slide02.png',
+      color: '#17b14f',
       images: [
         './static/images/qixi01.jpg',
         './static/images/qixi02.jpg',
@@ -116,6 +120,8 @@ export default {
       price: '800.00',
       onlinePrice: '600.00',
       cover: './static/images/bama01.jpg',
+      poster: './static/images/slide03.png',
+      color: '#e8e8e8',
       images: [
         './static/images/bama01.jpg',
         './static/images/bama02.jpg',
@@ -139,6 +145,8 @@ export default {
       price: '350.00',
       onlinePrice: '239.00',
       cover: './static/images/Lee01.jpg',
+      poster: './static/images/slide04.png',
+      color: '#96520c',
       images: [
         './static/images/Lee01.jpg',
         './static/images/Lee02.jpg',
